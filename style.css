@@ -6,6 +6,7 @@ body {
     position: relative;
     background-color: black;
     height: 100vh;
+    overflow: hidden;
 }
 
 .pallette {
@@ -13,6 +14,14 @@ body {
     width: 20px;
     height: 200px;
     background-color: white;
+}
+
+.ball {
+    background-color: white;
+    width: 30px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    position: absolute;
 }
 
 #gameZone .pallette:nth-of-type(1) {

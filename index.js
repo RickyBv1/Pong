@@ -7,6 +7,7 @@ class Pallette {
     speed = 10;
     movement;
     tall = 200;
+    width = 20;
 
     constructor() {
         this.element = document.createElement("div");
@@ -48,6 +49,75 @@ class Pallette {
 
 }
 
+class Ball  {
+
+    x;
+    y;
+    xd = -10;
+    yd = -10;    //"d" means differential
+    width = 30;
+    movement;
+
+    constructor() {
+        this.element = document.createElement("div");
+        this.element.classList = "ball";
+        gameZone.appendChild(this.element);
+        this.resetPosition();
+    }
+
+    resetPosition() {
+        this.x = document.body.clientWidth / 2 - this.width / 2;
+        this.element.style.left = this.x + "px";
+        this.y = document.body.clientHeight / 2 - this.width / 2;
+        this.element.style.top = this.y + "px";
+    }
+
+    move() {
+        if (!this.movement) {
+            this.movement = setInterval(() => {
+                //horizontal movement
+                this.x += this.xd
+
+                //pallette impact
+                //pallette p1
+                if(this.x < 0 + p1.width &&
+                    this.y + this.width / 2 > p1.y &&
+                    this.y + this.width / 2 < p1.y + p1.tall
+                ) {
+                    this.xd = this.xd * -1
+                }
+                //pallette p2
+                if(this.x + this.width > document.body.clientWidth - p2.width &&
+                    this.y + this.width / 2 > p2.y &&
+                    this.y + this.width / 2 < p2.y + p2.tall
+                ) {
+                    this.xd = this.xd * -1
+                }
+
+                //add a point
+                if(this.x < 0 || this.x > document.body.clientWidth - this.width) {
+                    console.log ("score")
+                    this.delete();
+                }
+                this.element.style.left = this.x + "px";
+
+                //vertical movement
+                this.y += this.yd
+                if(this.y < 0 || this.y > document.body.clientHeight - this.width) {
+                    this.yd = this.yd * - 1
+                }
+                this.element.style.top = this.y + "px";
+            }, 20)
+        }
+    }
+
+    delete() {
+        clearInterval(this.movement);
+        gameZone.removeChild(this.element);
+    }
+
+}
+
 document.addEventListener("keydown", (e) => {
     console.log(e);
     switch (e.key) {
@@ -85,3 +155,4 @@ document.addEventListener("keyup", (e) => {
 
 const p1 = new Pallette();
 const p2 = new Pallette();
+const ball = new Ball();
