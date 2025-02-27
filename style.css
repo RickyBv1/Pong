@@ -7,6 +7,7 @@ body {
     color: white;
     margin: 0;
     font-family: llpixel, monospace;
+    text-align: center;
 }
 
 #gameZone {
@@ -36,10 +37,56 @@ body {
     font-size: 5rem;
 }
 
-#gameZone .pallette:nth-of-type(1) {
+#pallettesContainer :first-child {
     left: 0;
 }
 
-#gameZone .pallette:nth-of-type(2) {
+#pallettesContainer :last-child {
     right: 0;
+}
+
+#message {
+    position: absolute;
+    top: 45%;
+    width: 100%;
+    font-size: 3rem;
+}
+
+#instructions {
+    position: absolute;
+    width: 100%;
+    font-size: 1.5rem;
+    bottom: 0 ;
+}
+
+kbd {
+    background-color: rgba(255, 255, 255, 0.3);
+    display: inline-block;
+    width: 30px;
+    aspect-ratio: 1;
+}
+
+.hidden {
+    opacity: 0;
+}
+
+.spark {
+    animation-name: spark;
+    animation-duration: 0.8s;
+    animation-iteration-count: infinite;
+}
+
+@keyframes spark {
+    0% {
+        opacity: 100%;
+    }
+    49.99% {
+        opacity: 100%;
+    }
+    50% {
+        opacity: 0%;
+    }
+    99.99% {
+        opacity: 0%;
+    }
 }
