@@ -1,5 +1,12 @@
+@font-face {
+    font-family: "llpixel";
+    src: url(LLPIXEL3.ttf) format("TrueType");
+}
+
 body {
+    color: white;
     margin: 0;
+    font-family: llpixel, monospace;
 }
 
 #gameZone {
@@ -22,6 +29,11 @@ body {
     aspect-ratio: 1;
     border-radius: 50%;
     position: absolute;
+}
+
+#board {
+    text-align: center;
+    font-size: 5rem;
 }
 
 #gameZone .pallette:nth-of-type(1) {
