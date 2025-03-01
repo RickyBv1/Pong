@@ -11,6 +11,7 @@ class Pallette {
   movement;
   tall = 200;
   width = 20;
+  cpu;
 
   constructor() {
     this.element = document.createElement("div");
@@ -52,8 +53,37 @@ class Pallette {
   }
 
   resetPosition() {
-    this.y = document.body.clientHeight / 2 - this.tall / 2
+    this.freeze();
+    this.y = document.body.clientHeight / 2 - this.tall / 2;
     this.element.style.top = this.y + "px";
+  }
+
+  toggleCPU() {
+    if(this.cpu) {
+      clearInterval(this.cpu)
+      clearInterval(this.movement)
+      this.movement = undefined;
+      this.cpu = undefined
+    } else {
+      this.cpu = setInterval(() => {
+        if(!ball) return;
+        if(ball.getCenter() < this.y + this.tall / 3 &&
+          ball.getCenter() > this.y + this.tall / 3 * 2
+        ) {
+          this.freeze();
+        }
+        else if(ball.getCenter() < this.getCenter()) {
+          this.up();
+        }
+        else if(ball.getCenter() > this.getCenter()) {
+          this.down();
+        }
+      }, 20)
+    }
+  }
+
+  getCenter() {
+    return this.y + this.tall / 2
   }
 
 }
@@ -132,8 +162,12 @@ class Ball {
   }
 
   yVariation(p) {
-    const diffence = (this.y + this.width / 2) - (p.y + p.tall / 2);
+    const diffence = this.getCenter() - p.getCenter();
     return diffence / 10;
+  }
+
+  getCenter() {
+    return this.y + this.width / 2
   }
 
 }
@@ -142,7 +176,7 @@ class Board {
 
     p1Score = 0;
     p2Score = 0;
-    maxScore = 2;
+    maxScore = 6;
 
     constructor() {
         this.element = document.createElement("p");
@@ -188,7 +222,6 @@ class Board {
 }
 
 document.addEventListener("keydown", (e) => {
-  console.log(e);
   switch (e.key) {
     case "w":
       p1.up();
@@ -202,6 +235,12 @@ document.addEventListener("keydown", (e) => {
     case "ArrowDown":
       p2.down();
       break;
+    case "1":
+      p1.toggleCPU();
+      break;
+    case "2":
+      p2.toggleCPU();
+      break;
     case " ":
       if(gameStatus === "END") board.reset();
       if(!ball) ball = new Ball();
@@ -211,7 +250,6 @@ document.addEventListener("keydown", (e) => {
 });
 
 document.addEventListener("keyup", (e) => {
-  console.log(e);
   switch (e.key) {
     case "w":
     case "s":
