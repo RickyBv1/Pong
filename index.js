@@ -61,8 +61,8 @@ class Pallette {
 class Ball {
   x;
   y;
-  xd = -10;
-  yd = -10; //"d" means differential
+  xd = -15;
+  yd = 0; //"d" means differential
   width = 30;
   movement;
 
@@ -96,6 +96,7 @@ class Ball {
           this.y + this.width / 2 > p1.y &&
           this.y + this.width / 2 < p1.y + p1.tall
         ) {
+          this.yd += this.yVariation(p1);
           this.xd = this.xd * -1;
         }
         //pallette p2
@@ -104,6 +105,7 @@ class Ball {
           this.y + this.width / 2 > p2.y &&
           this.y + this.width / 2 < p2.y + p2.tall
         ) {
+          this.yd += this.yVariation(p2);
           this.xd = this.xd * -1;
         }
 
@@ -128,6 +130,12 @@ class Ball {
     gameZone.removeChild(this.element);
     ball = undefined;
   }
+
+  yVariation(p) {
+    const diffence = (this.y + this.width / 2) - (p.y + p.tall / 2);
+    return diffence / 10;
+  }
+
 }
 
 class Board {

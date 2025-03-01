@@ -64,6 +64,7 @@ kbd {
     display: inline-block;
     width: 30px;
     aspect-ratio: 1;
+    border-radius:  3px;
 }
 
 .hidden {
