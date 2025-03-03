@@ -32,7 +32,7 @@ class Pallette {
       this.movement = setInterval(() => {
         this.y += this.speed;
         if (this.y > document.body.clientHeight - this.tall)
-          this.y = document.body.clientHeight - tthis.tall;
+          this.y = document.body.clientHeight - this.tall;
         this.element.style.top = this.y + "px"
       }, 10);
     }
@@ -42,7 +42,7 @@ class Pallette {
     if (!this.movement) {
       this.movement = setInterval(() => {
         this.y += this.speed * -1;
-        if(this.y < 0) this.y + 0;
+        if(this.y < 0) this.y = 0;
         this.element.style.top = this.y + "px";
       }, 10);
     }
@@ -72,7 +72,7 @@ class Pallette {
             this.down();
           }
         } else this.resetPosition();
-      }, 40);
+      }, 20);
     } else {
       clearInterval(this.movement);
       this.movement = false;
@@ -95,7 +95,7 @@ class Pallette {
 class Ball {
   x;
   y;
-  width = 30;
+  width = 50;
   xd = -15;
   yd = 0; //"d" means differential
   element;
@@ -116,7 +116,7 @@ class Ball {
         this.x += this.xd;
         this.y += this.yd;
 
-        //Pallette
+        //Pallettes
         //Pallette p1
         if (
           this.x < 0 + p1.width &&
@@ -187,6 +187,7 @@ class Ball {
 }
 
 class Board {
+  element;
   p1Score = 0;
   p2Score = 0;
   maxScore = 6;
@@ -195,6 +196,12 @@ class Board {
     this.element = document.createElement("p");
     this.element.id = "board";
     gameZone.appendChild(this.element);
+    this.reset();
+  }
+
+  reset() {
+    this.p1Score = 0;
+    this.p2Score = 0;
     this.updateText();
   }
 
@@ -206,46 +213,25 @@ class Board {
     if (p === 1) this.p1Score++;
     else this.p2Score++;
     this.updateText();
-    ball.delete();
-    p1.resetPosition();
-    p2.resetPosition();
-    messageElement.textContent = 'press "space" to continue';
-    messageElement.classList.toggle("hidden", false);
-    this.gameStatus = "PAUSE";
-    if (this.p1Score >= this.maxScore) {
-      this.win(1);
-    } else if (this.p2Score >= this.maxScore) {
-      this.win(2);
-    }
-  }
-
-  win(p) {
-    messageElement.textContent = "Player " + p + " win!";
-    messageElement.classList.toggle("spark", true);
-    gameStatus = "END";
-  }
-
-  reset() {
-    this.p1Score = 0;
-    this.p2Score = 0;
-    this.updateText();
-    messageElement.classList.toggle("spark", false);
+    if(this.p1Score >= this.maxScore) win(1);
+    if(this.p2Score >= this.maxScore) win(2);
   }
 }
 
+//Keyboard control
 document.addEventListener("keydown", (e) => {
   switch (e.key) {
-    case "w":
-      p1.up();
-      break;
-    case "s":
-      p1.down();
+    case "ArrowDown":
+      if (!p2.cpu) p2.down();
       break;
     case "ArrowUp":
-      p2.up();
+      if (!p2.cpu) p2.up();
       break;
-    case "ArrowDown":
-      p2.down();
+    case "s":
+      if (!p1.cpu) p1.down();
+      break;
+    case "w":
+      if (!p1.cpu) p1.up();
       break;
     case "1":
       p1.toggleCPU();
@@ -254,27 +240,52 @@ document.addEventListener("keydown", (e) => {
       p2.toggleCPU();
       break;
     case " ":
-      if (gameStatus === "END") board.reset();
-      if (!ball) ball = new Ball();
-      gameStatus = "PLAY";
+      if (!ball) gameStart();
       break;
   }
 });
 
+//Stop the pallettes
 document.addEventListener("keyup", (e) => {
   switch (e.key) {
+    case "ArrowDown":
+    case "ArrowUp":
+      if (!p2.cpu) p2.freeze();
+      break;
     case "w":
     case "s":
-      p1.freeze();
-      break;
-
-    case "ArrowUp":
-    case "ArrowDown":
-      p2.freeze();
+      if (!p1.cpu) p1.freeze();
       break;
   }
 });
 
+function gameStart() {
+messageElement.textContent = "";
+if(gameStatus === "END") board.reset();
+gameStatus = "PLAY";
+ball = new Ball();
+board.element.classList.toggle("spark", false);
+instructionsElement.classList.toggle("hidden", true);
+}
+
+function addPoint() {
+  ball.delete();
+  ball = undefined;
+  messageElement.textContent = 'Press "space" to continue';
+  audioScore.currentTime = 0;
+  audioScore.play();
+  board.add(0);
+}
+
+function win(p) {
+board.element.classList.toggle("spark", true);
+p1.toggleCPU(true);
+p2.toggleCPU(true);
+gameStatus = "END";
+messageElement.textContent = "Player N" + p + " win!!";
+}
+
+//Execution
 const board = new Board();
-const p1 = new Pallette("pallette1");
-const p2 = new Pallette("pallette2");
+const p1 = new Pallette("pallette1")
+const p2 = new Pallette("pallette2")
