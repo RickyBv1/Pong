@@ -268,13 +268,13 @@ board.element.classList.toggle("spark", false);
 instructionsElement.classList.toggle("hidden", true);
 }
 
-function addPoint() {
+function addPoint(p) {
   ball.delete();
   ball = undefined;
   messageElement.textContent = 'Press "space" to continue';
   audioScore.currentTime = 0;
   audioScore.play();
-  board.add(0);
+  board.add(p);
 }
 
 function win(p) {
